@@ -1,24 +1,30 @@
-import logo from './logo.svg';
-import './App.css';
+import "./App.css";
+import React, { useState,useEffect } from "react";
+import { AccountBox, User, Trainer } from "./pages/AccountBox";
+import { UserAuthData } from "./helpers/accountContext";
+import {
+  Route,
+  BrowserRouter as Router,
+  Switch,
+  Redirect,
+} from "react-router-dom";
 
 function App() {
+  const [auth,setAuth] = useState(false);
+  const [date,setdata] = useState({});
+  useEffect(() =>{
+
+  },[auth]);
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <UserAuthData.Provider value={auth,setAuth,date,setdata}>
+      <Router>
+        <Switch>
+          <Route exact path="/" component={AccountBox} />
+          {/* <PrivateRoute path="/user" authenticated={this.state.authenticated} component={User} />
+      <PublicRoute path="/trainer" authenticated={this.state.authenticated} component={Trainer} /> */}
+        </Switch>
+      </Router>
+    </UserAuthData.Provider>
   );
 }
 
