@@ -10,11 +10,9 @@ import {
 import { Marginer } from "./Marginer";
 import { signin } from "../helpers/auth";
 import { AccountContext } from "../helpers/accountContext";
-import { UserAuthData } from "../helpers/accountContext";
 
 export function LoginForm() {
-  const { switchToSignup } = useContext(AccountContext);
-  const { setAuth, setdata } = useContext(UserAuthData);
+  const { switchToSignup,setAuth } = useContext(AccountContext);
   const [email, setEmail] = useState("");
   const [pass, setPass] = useState("");
 
@@ -22,8 +20,10 @@ export function LoginForm() {
     e.preventDefault();
     try {
       let response = await signin(email, pass);
-      setdata(response);
+      console.log(response);
+      if(response){
       setAuth(true);
+      }
     } catch (e) {}
   };
 

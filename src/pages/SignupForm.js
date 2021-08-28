@@ -7,7 +7,6 @@ import {
   MutedLink,
   SubmitButton,
   SwitchLink,
-  ParagraphTag
 } from "./Common";
 import Switch from "@material-ui/core/Switch";
 import { Marginer } from "./Marginer";
@@ -15,7 +14,7 @@ import { signup } from "../helpers/auth";
 import { AccountContext } from "../helpers/accountContext";
 
 export function SignupForm(props) {
-  const { switchToSignin } = useContext(AccountContext);
+  const { switchToSignin,setAuth } = useContext(AccountContext);
   const [check, setCheck] = useState(true);
   const [email, setEmail] = useState("");
   const [name, setName] = useState("");
@@ -24,24 +23,25 @@ export function SignupForm(props) {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      await signup(email, password, name, check);
+      const response = await signup(email, password, name, check);
+      if(response){
+        setAuth(true)
+      }
     } catch (e) {}
   };
 
   return (
     <BoxContainer>
-      <SwitchLink>        
-          Practionar
-          <Switch
-            checked={check}
-            onChange={(event) => setCheck(check ? false : true)}
-            name="check"
-            inputProps={{ "aria-label": "secondary checkbox" }}
-            // style={{ width: "40px",}}
-          />
-           Trainer
-          
-        </SwitchLink>
+      <SwitchLink>
+        Practitioner
+        <Switch
+          checked={check}
+          onChange={(event) => setCheck(check ? false : true)}
+          name="check"
+          inputProps={{ "aria-label": "secondary checkbox" }}
+        />
+        Trainer
+      </SwitchLink>
       <FormContainer>
         <Input
           type="text"

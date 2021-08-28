@@ -1,35 +1,18 @@
-import React, { useContext } from "react";
+import React from "react";
 import { Redirect, Route } from "react-router";
-import { UserAuthData } from "./accountContext";
 
-export function PrivateRoute({ component: Component, authenticated, ...rest }) {
-  const { auth, data } = useContext(UserAuthData);
+export function PrivateRoute({ component: Component, ...rest }) {
   return (
     <Route
-      {...rest}
-      render={(props) =>
-        auth === true && data.type === "customer" ? (
-          <Redirect
-            to={{ pathname: "/customer", state: { from: props.location } }}
-          />
-        ) : (
-          <Redirect
-            to={{ pathname: "/trainer", state: { from: props.location } }}
-          />
-        )
-      }
+        {...rest}
+        render={(props) => {
+            if (localStorage.getItem("token")) {
+                return <Component {...props} />;
+            } else {
+                return <Redirect to="/" />;
+            }
+        }}
     />
+
   );
 }
-
-// export function PublicRoute({ component: Component, authenticated, ...rest }) {
-//   const { auth, data } = useContext(UserAuthData);
-//   return (
-//     <Route
-//       {...rest}
-//       render={(props) =>
-//         auth === false ? <Component {...props} /> : <Redirect to="/" />
-//       }
-//     />
-//   );
-// }

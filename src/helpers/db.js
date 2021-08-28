@@ -1,15 +1,17 @@
 import { db } from "../services/firebase";
 
 export async function readData(uid) {
-  let snapshot = await db
+  return await db
     .ref("user_data")
     .orderByChild("uid")
     .equalTo(uid)
     .limitToFirst(1)
     .once("value")
-    .then((snapshot) => snapshot.val());
-    let key = Object.keys(snapshot)[0];
-    return snapshot[key];
+    .then((snapshot) => {
+      let result = snapshot.val();
+      let key = Object.keys(result)[0];
+      localStorage.setItem("data", JSON.stringify(result[key]));
+      });
 }
 
 export async function writeData(name, check, uid) {
