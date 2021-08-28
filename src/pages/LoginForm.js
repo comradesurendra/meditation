@@ -1,4 +1,4 @@
-import React, { useContext,useState } from "react";
+import React, { useContext, useState } from "react";
 import {
   BoldLink,
   BoxContainer,
@@ -8,43 +8,54 @@ import {
   SubmitButton,
 } from "./Common";
 import { Marginer } from "./Marginer";
-import {signin} from "../helpers/auth";
+import { signin } from "../helpers/auth";
 import { AccountContext } from "../helpers/accountContext";
 import { UserAuthData } from "../helpers/accountContext";
 
-
 export function LoginForm() {
   const { switchToSignup } = useContext(AccountContext);
-  const { auth,setAuth,date,setdata } = useContext(UserAuthData)
-  const [email,setEmail] = useState("");
-  const [pass,setPass] = useState("");
+  const { setAuth, setdata } = useContext(UserAuthData);
+  const [email, setEmail] = useState("");
+  const [pass, setPass] = useState("");
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    try{
-      let response = signin(email,pass);
-    } catch(e){}
-    
-  }
+    try {
+      let response = await signin(email, pass);
+      setdata(response);
+      setAuth(true);
+    } catch (e) {}
+  };
 
   return (
-        <BoxContainer>
-          <FormContainer>
-            <Input type="email" placeholder="Email" onChange={event => setEmail(event.target.value)}/>
-            <Input type="password" placeholder="Password" onChange={event => setPass(event.target.value)}/>
-          </FormContainer>
-          <Marginer direction="vertical" margin={10} />
-          <MutedLink href="#">Forget your password?</MutedLink>
-          <Marginer direction="vertical" margin="1.6em" />
-          <SubmitButton type="submit" onClick={handleSubmit}>Signin</SubmitButton>
-          <Marginer direction="vertical" margin="1em" />
-          <MutedLink href="#">
-            Don't have an accoun?{" "}
-            <BoldLink href="#" onClick={switchToSignup}>
-              Signup
-            </BoldLink>
-          </MutedLink>
-        </BoxContainer>
+    <BoxContainer>
+      <FormContainer>
+        <Input
+          type="email"
+          placeholder="Email"
+          autocomplete="false"
+          onChange={(event) => setEmail(event.target.value)}
+        />
+        <Input
+          type="password"
+          placeholder="Password"
+          autocomplete="false"
+          onChange={(event) => setPass(event.target.value)}
+        />
+      </FormContainer>
+      <Marginer direction="vertical" margin={10} />
+      <MutedLink href="#">Forget your password?</MutedLink>
+      <Marginer direction="vertical" margin="1.6em" />
+      <SubmitButton type="submit" onClick={handleSubmit}>
+        Signin
+      </SubmitButton>
+      <Marginer direction="vertical" margin="1em" />
+      <MutedLink onClick={switchToSignup}>
+        Don't have an accoun?{" "}
+        <BoldLink >
+          Signup
+        </BoldLink>
+      </MutedLink>
+    </BoxContainer>
   );
 }
-

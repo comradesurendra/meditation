@@ -1,19 +1,22 @@
 import { db } from "../services/firebase";
 
-export function readChats() {
-  let abc = [];
-  db.ref("chats").on("value", snapshot => {
-    snapshot.forEach(snap => {
-      abc.push(snap.val())
-    });
-    return abc;
-  });
+export async function readData(uid) {
+  let snapshot = await db
+    .ref("user_data")
+    .orderByChild("uid")
+    .equalTo(uid)
+    .limitToFirst(1)
+    .once("value")
+    .then((snapshot) => snapshot.val());
+    let key = Object.keys(snapshot)[0];
+    return snapshot[key];
 }
 
-export function writeChats(message) {
-  return db.ref("chats").push({
-    content: message.content,
-    timestamp: message.timestamp,
-    uid: message.uid
+export async function writeData(name, check, uid) {
+  return await db.ref("user_data").push({
+    name: name,
+    type: check === true ? "customer" : "trainer",
+    uid: uid,
+    status: "offline",
   });
 }

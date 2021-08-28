@@ -21,14 +21,37 @@ export const MutedLink = styled.a`
   font-weight: 500;
   margin-bottom:8px;
   text-decoration: none;
+  &:hover {
+    cursor: pointer;
+  }
 `;
 
-export const BoldLink = styled.a`
+export const BoldLink = styled.span`
   font-size: 11px;
   color: #64CEFD;
   font-weight: 500;
   text-decoration: none;
   margin: 0 4px;
+  &:hover {
+    cursor: pointer;
+  }
+`;
+
+export const SwitchLink = styled.span`
+  position: relative;
+  align-content: center;
+  font-size: 20px;
+  color: #64CEFD;
+  font-weight: 800;
+  text-decoration: none;
+  height: 42px;
+  border: 1px solid #FFF;;
+  outline: none;
+  slef-align: center;
+  margin: 0 4px;
+  &:hover {
+    cursor: pointer;
+  }
 `;
 
 export const Input = styled.input`
