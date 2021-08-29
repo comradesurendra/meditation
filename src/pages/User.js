@@ -29,7 +29,6 @@ export function User() {
     useContext(UserAuthData);
   const [signout, setSignout] = useState(false);
   const [timer, setTimer] = useState();
-  const [start, setStart] = useState(false);
 
   useEffect(() => {
     let isMounted = true;
@@ -61,12 +60,17 @@ export function User() {
       }
     };
 
+     //*** Set server time and update display timer ***//
     const handleTimer = () => {
       let serverTimeOffset = 0;
+
+      //*** Get server time to check diff from user sys ***//
       db.ref(".info/serverTimeOffset").on("value", (snapshot) => {
         serverTimeOffset = snapshot.val();
         return serverTimeOffset;
       });
+
+      //*** Get the duration of meditation session from db ***//
       db.ref(`user_data/${userid}/countdown`).on("value", (snapshot) => {
         let seconds = snapshot.val().seconds;
         let startAt = snapshot.val().startAt;
@@ -83,6 +87,8 @@ export function User() {
         return seconds;
       });
     };
+
+    //***  firebase on method to get realtime upate nased on db update ***//
     db.ref(`user_data`).on("child_changed", handleAvailUser);
     db.ref(`user_data/${userid}/countdown`).on("child_added", handleTimer);
 
@@ -92,9 +98,17 @@ export function User() {
   }, []);
 
   const handleSubmit = async () => {
+
+    //*** Filter the available trainer currently online ***//
     let availabletrai = availdata.filter((obj) => obj?.status === "online");
+
+    //*** Take first available tariner id of all available trainers ***//
     availabletrai = availabletrai[0]?.id;
+
+    //*** Method call to start timer and update the pair id to connected trainer ***//
     await setCounter(userid, availabletrai);
+
+    //*** Method call to update the pair id of trainer to connected user **//
     await connectTrainer(userid, availabletrai);
   };
 

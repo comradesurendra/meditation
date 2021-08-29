@@ -1,92 +1,19 @@
-import React, { useState, useEffect } from "react";
-import styled from "styled-components";
+import React, { useState } from "react";
+import {
+  BoxContainerHome,
+  TopContainer,
+  BackDrop,
+  HeaderContainer,
+  HeaderText,
+  SmallText,
+  InnerContainer,
+  ImageBoxContainer,
+} from "./Common";
 import { LoginForm } from "./LoginForm";
-import { motion } from "framer-motion";
 import { Redirect } from "react-router-dom";
 import { AccountContext } from "../helpers/accountContext";
 import Logo from "../assets/mindfulness.svg";
 import { SignupForm } from "./SignupForm";
-
-const BoxContainer = styled.div`
-  width: 380px;
-  min-height: 450px;
-  display: flex;
-  flex-direction: column;
-  border-radius: 19px;
-  background-color: #fff;
-  box-shadow: 0 0 2px rgba(15, 15, 15, 0.28);
-  position: absolute;
-  top: 30px;
-  left: 1100px;
-  overflow: hidden;
-`;
-
-const TopContainer = styled.div`
-  width: 50%;
-  height: 300px;
-  display: flex;
-  flex-direction: column;
-  justify-content: flex-end;
-  padding: 0 1.8em;
-  padding-bottom: 5em;
-`;
-
-const BackDrop = styled(motion.div)`
-  width: 100%;
-  height: 450px;
-  position: absolute;
-  display: flex;
-  flex-direction: column;
-  border-radius: 50%;
-  transform: rotate(60deg);
-  top: -290px;
-  left: -70px;
-  background: #64cefd;
-  background: #64cefd;
-`;
-
-const HeaderContainer = styled.div`
-  width: 100%;
-  display: flex;
-  position: absolute;
-  left: 30%;
-  top: 80px;
-  flex-direction: column;
-`;
-
-const HeaderText = styled.h2`
-  font-size: 30px;
-  font-weight: 600;
-  line-height: 1.24;
-  color: #fff;
-  z-index: 10;
-  right: 40px;
-  margin: 0;
-`;
-
-const SmallText = styled.h5`
-  color: #fff;
-  font-weight: 500;
-  font-size: 11px;
-  z-index: 10;
-  margin: 0;
-  margin-top: 7px;
-`;
-
-const InnerContainer = styled.div`
-  width: 80%;
-  display: flex;
-  flex-direction: column;
-  padding: 0 1.8em;
-`;
-
-const ImageBoxContainer = styled.img`
-  width: 700px;
-  height: 550px;
-  position: absolute;
-  top: 100px;
-  left: 140px;
-`;
 
 const backdropVariants = {
   expanded: {
@@ -109,7 +36,7 @@ const expandingTransition = {
   stiffness: 30,
 };
 
-export function AccountBox(props) {
+export function Home(props) {
   const [authenticate, setAuth] = useState(false);
   const [isExpanded, setExpanded] = useState(false);
   const [active, setActive] = useState("signin");
@@ -135,16 +62,20 @@ export function AccountBox(props) {
     }, 400);
   };
 
-  const contextValue = { switchToSignup, switchToSignin, setAuth, authenticate };
+  const contextValue = {
+    switchToSignup,
+    switchToSignin,
+    setAuth,
+    authenticate,
+  };
 
   if (authenticate) {
     return <Redirect to="/dashboard" />;
   } else {
     return (
       <AccountContext.Provider value={contextValue}>
-        {/* <HomeHeaderText>Welcome to meditation center</HomeHeaderText> */}
         <ImageBoxContainer src={Logo} />
-        <BoxContainer>
+        <BoxContainerHome>
           <TopContainer>
             <BackDrop
               initial={false}
@@ -171,7 +102,7 @@ export function AccountBox(props) {
             {active === "signin" && <LoginForm />}
             {active === "signup" && <SignupForm />}
           </InnerContainer>
-        </BoxContainer>
+        </BoxContainerHome>
       </AccountContext.Provider>
     );
   }

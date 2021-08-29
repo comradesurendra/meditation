@@ -25,16 +25,16 @@ import { UserAuthData } from "../helpers/accountContext";
 import { db } from "../services/firebase";
 
 export function Trainer() {
-  const { userdata, count, availdata,  userid } =
-    useContext(UserAuthData);
+  const { userdata, count, availdata, userid } = useContext(UserAuthData);
   const [signout, setSignout] = useState(false);
   const [timer, setTimer] = useState();
-  const [pair,setPair] = useState();
+  const [pair, setPair] = useState();
 
   useEffect(() => {
     let isMounted = true;
     const handleAvailUser = () => {
-      let availableTrainer = 0;
+
+      //*** Fetch the paired customer id if exist ***//
       if (isMounted) {
         db.ref(`user_data/${userid}/pair`)
           .once("value")
@@ -45,16 +45,20 @@ export function Trainer() {
       }
     };
 
+    //*** Set server time and update display timer ***//
     const handleTimer = () => {
       let serverTimeOffset = 0;
+
+      //*** Get server time to check diff from user sys ***//
       db.ref(".info/serverTimeOffset").on("value", (snapshot) => {
         serverTimeOffset = snapshot.val();
         return serverTimeOffset;
       });
+
+      //*** Get the duration of meditation session from db ***//
       db.ref(`user_data/${userid}/countdown`).on("value", (snapshot) => {
         let seconds = snapshot.val().seconds;
         let startAt = snapshot.val().startAt;
-
         let interval = setInterval(() => {
           let timeLeft =
             seconds * 1000 - (Date.now() - startAt - serverTimeOffset);
@@ -68,6 +72,8 @@ export function Trainer() {
         return seconds;
       });
     };
+
+    //***  firebase on method to get realtime upate nased on db update ***//
     db.ref(`user_data`).on("child_changed", handleAvailUser);
     db.ref(`user_data/${userid}/countdown`).on("child_added", handleTimer);
 
@@ -117,7 +123,7 @@ export function Trainer() {
         <BoxContainerUser>
           {count === 0 ? (
             <InnerContainerUser>
-              <SmallTextUser>No tariner onlin.</SmallTextUser>
+              <SmallTextUser>No user onlin.</SmallTextUser>
             </InnerContainerUser>
           ) : (
             <InnerContainerUser>

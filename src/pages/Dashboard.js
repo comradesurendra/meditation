@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useContext } from "react";
+import React, { useEffect, useState } from "react";
 import { Trainer } from "./Trainer";
 import { User } from "./User";
 import { UserAuthData } from "../helpers/accountContext";
@@ -11,6 +11,8 @@ export function Dashboard(props) {
   const [userid, setUserId] = useState(localStorage.getItem("userId"));
   const [availdata, setAvailData] = useState([{}]);
   const [count, setCount] = useState(0);
+
+  //*** Fetch all the records based on user/trainer login ***//
   useEffect(() => {
     let isMounted = true;
     let availableTrainer = 0;
@@ -42,6 +44,7 @@ export function Dashboard(props) {
       isMounted = false;
     };
   }, []);
+  
   return (
     <UserAuthData.Provider
       value={{

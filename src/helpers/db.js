@@ -1,5 +1,6 @@
 import { db, timestp } from "../services/firebase";
 
+//**** Featch the user data and store into localStorage******//
 export async function readData(uid) {
   return await db
     .ref("user_data")
@@ -15,6 +16,7 @@ export async function readData(uid) {
     });
 }
 
+//**** Update the record in firebase for new registered user ****//
 export async function writeData(name, check, uid) {
   return await db.ref("user_data").push({
     name: name,
@@ -27,6 +29,7 @@ export async function writeData(name, check, uid) {
   });
 }
 
+//**** Update the status inside db based on user loing and logout ****//
 export async function updateStatus(uid, check) {
   if (check == "login") {
     return await db
@@ -47,6 +50,7 @@ export async function updateStatus(uid, check) {
   }
 }
 
+//***** Use the server time for the timer and update the paired trainer id *****//
 export async function setCounter(uid, tid) {
   return await db.ref(`user_data/${uid}`).update({
     countdown: {
@@ -58,6 +62,8 @@ export async function setCounter(uid, tid) {
   });
 }
 
+
+//****** Update the pair customer id into the db *****//
 export async function connectTrainer(uid, tid) {
   return await db.ref(`user_data/${tid}`).update({
     countdown: {
@@ -69,6 +75,7 @@ export async function connectTrainer(uid, tid) {
   });
 }
 
+//***** Update the timer value based on the trainer exit ****//
 export async function endCall(uid) {
   return await db.ref(`user_data/${uid}`).update({
     countdown: {

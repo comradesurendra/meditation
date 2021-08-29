@@ -1,4 +1,4 @@
-import React, { useContext, useState, useEffect } from "react";
+import React, { useContext, useState } from "react";
 import {
   BoldLink,
   BoxContainer,
@@ -12,7 +12,7 @@ import { signin } from "../helpers/auth";
 import { AccountContext } from "../helpers/accountContext";
 
 export function LoginForm() {
-  const { switchToSignup, setAuth, authenticate } = useContext(AccountContext);
+  const { switchToSignup, setAuth } = useContext(AccountContext);
   const [email, setEmail] = useState("");
   const [pass, setPass] = useState("");
 

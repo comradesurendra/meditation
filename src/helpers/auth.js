@@ -1,6 +1,7 @@
 import { auth } from "../services/firebase";
 import { writeData, readData, updateStatus } from "./db";
 
+//**************** firebase api call for signup *************//
 export async function signup(email, password, name, check) {
   try {
     let response = await auth().createUserWithEmailAndPassword(email, password);
@@ -15,6 +16,7 @@ export async function signup(email, password, name, check) {
   }
 }
 
+//**************** firebase api call for login ***************//
 export async function signin(email, password) {
   try {
     const response = await auth().signInWithEmailAndPassword(email, password);
@@ -30,6 +32,7 @@ export async function signin(email, password) {
   }
 }
 
+//**************** firebase api call for logout ***************//
 export async function logout() {
   return await auth()
     .signOut()

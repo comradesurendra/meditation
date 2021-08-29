@@ -1,6 +1,6 @@
 import "./App.css";
-import React, { useState } from "react";
-import { AccountBox } from "./pages/AccountBox";
+import React from "react";
+import { Home } from "./pages/Home";
 import { Dashboard } from "./pages/Dashboard";
 import { Route, BrowserRouter as Router, Switch } from "react-router-dom";
 import { PrivateRoute } from "./helpers/authroute";
@@ -9,7 +9,7 @@ function App() {
   return (
     <Router>
       <Switch>
-        <Route exact path="/" component={AccountBox} />
+        <Route exact path="/" component={Home} />
         <PrivateRoute exact path="/dashboard" component={Dashboard} />
       </Switch>
     </Router>

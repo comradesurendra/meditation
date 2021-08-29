@@ -14,7 +14,7 @@ import { signup } from "../helpers/auth";
 import { AccountContext } from "../helpers/accountContext";
 
 export function SignupForm(props) {
-  const { switchToSignin,setAuth } = useContext(AccountContext);
+  const { switchToSignin, setAuth } = useContext(AccountContext);
   const [check, setCheck] = useState(true);
   const [email, setEmail] = useState("");
   const [name, setName] = useState("");
@@ -24,8 +24,8 @@ export function SignupForm(props) {
     e.preventDefault();
     try {
       const response = await signup(email, password, name, check);
-      if(response){
-        setAuth(true)
+      if (response) {
+        setAuth(true);
       }
     } catch (e) {}
   };
