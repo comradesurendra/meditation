@@ -1,4 +1,4 @@
-import { db } from "../services/firebase";
+import { db,timestp} from "../services/firebase";
 
 export async function readData(uid) {
   return await db
@@ -17,9 +17,11 @@ export async function readData(uid) {
 export async function writeData(name, check, uid) {
   return await db.ref("user_data").push({
     name: name,
-    type: check === true ? "customer" : "trainer",
+    type: check === false ? "customer" : "trainer",
     uid: uid,
     status: "offline",
+    occupied: false,
+    countdown: "",
   });
 }
 
@@ -41,4 +43,19 @@ export async function updateStatus(uid, check) {
         snapshot.ref.update({ status: "offline" });
       });
   }
+}
+
+export async function setCounter(uid) {
+  return await db
+    .ref("user_data")
+    .orderByChild("uid")
+    .equalTo(uid)
+    .once("child_added", function (snapshot) {
+      snapshot.ref.update({
+        countdown: {
+          startAt: timestp,
+          seconds: 20,
+        },
+      });
+    });
 }

@@ -1,9 +1,11 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useContext } from "react";
 import { Redirect } from "react-router-dom";
 import styled from "styled-components";
 import { motion } from "framer-motion";
 import Logo from "../assets/undraw.svg";
 import { logout } from "../helpers/auth";
+import {setCounter}  from "../helpers/db"
+import { UserAuthData } from "../helpers/accountContext";
 
 const BoxContainer = styled.div`
   width: 380px;
@@ -58,7 +60,7 @@ const TopContainer = styled.div`
 `;
 
 const HeaderContainer = styled.div`
-  width: 600px;
+  width: 400px;
   display: flex;
   position: absolute;
   left: 100px;
@@ -79,20 +81,22 @@ const HeaderText = styled.span`
   margin: 0;
 `;
 
-const SmallText = styled.h5`
+const SmallText = styled.div`
   color: #64cefd;
+  float: center;
   font-weight: 500;
-  font-size: 11px;
-  z-index: 10;
+  font-size: 19px;
   margin: 0;
-  margin-top: 7px;
+  right: 25px;
 `;
 
 const InnerContainer = styled.div`
   width: 80%;
   display: flex;
+  position: absolute;
   flex-direction: column;
   padding: 0 1.8em;
+  top: 40px;
 `;
 
 const ImageBoxContainer = styled.img`
@@ -141,6 +145,24 @@ export const LogOutButton = styled.button`
   }
 `;
 
+export const RoundCircleOne = styled.div`
+  float: left;
+  width: 19px;
+  height: 19px;
+  border-radius: 50%;
+  background-color: #80ed99;
+  margin: 5px;
+`;
+
+export const RoundCircleTwo = styled.div`
+  float: left;
+  width: 19px;
+  height: 19px;
+  border-radius: 50%;
+  background-color: #ff2442;
+  margin: 5px;
+`;
+
 const backdropVariants = {
   expanded: {
     width: "233%",
@@ -162,20 +184,12 @@ const expandingTransition = {
   stiffness: 30,
 };
 
-function useCustomState(defaultValue, key) {
-  const [value, setValue] = React.useState(() => {
-    const stickyValue = localStorage.getItem(key);
-    return stickyValue !== null ? JSON.parse(stickyValue) : defaultValue;
-  });
-  return [value, setValue];
-}
-
 export function User() {
-  const [userData, setUserData] = useCustomState(null, "data");
+  const { userdata, count, availdata } = useContext(UserAuthData);
   const [signout, setSignout] = useState(false);
-
-  const handleSubmit = () => {};
-
+  const handleSubmit = () => {
+    setCounter(userdata?.uid);
+  };
   const handleLogout = async () => {
     try {
       const response = await logout();
@@ -184,15 +198,14 @@ export function User() {
       }
     } catch (e) {}
   };
-
-  useEffect(() => {}, [signout]);
+  console.log(availdata);
   if (signout) {
     return <Redirect to="/" push={true} />;
   } else {
     return (
       <>
         <HeaderContainer>
-          <HeaderText>Welcome {userData.name}</HeaderText>
+          <HeaderText>Welcome {userdata?.name}</HeaderText>
         </HeaderContainer>
         <LogOutButton type="submit" onClick={handleLogout}>
           logout
@@ -200,11 +213,37 @@ export function User() {
         <BoxContainerTwo>
           <ImageBoxContainer src={Logo} />
         </BoxContainerTwo>
-        <StartButton type="submit" onClick={handleSubmit}>
+        <StartButton
+          type="submit"
+          disable={count != 0 ? false : true}
+          onClick={handleSubmit}
+        >
           Start
         </StartButton>
         <BoxContainerThree></BoxContainerThree>
-        <BoxContainer></BoxContainer>
+        <BoxContainer>
+          {count === 0 || availdata.length === 0 ? (
+            <InnerContainer>
+              <SmallText>No tariner onlin.</SmallText>
+            </InnerContainer>
+          ) : (
+            <InnerContainer>
+              {availdata.map((d) =>
+                d.status == "offline" ? (
+                  <span key={d.uid}>
+                    <RoundCircleTwo />
+                    <SmallText>{d.name}</SmallText>
+                  </span>
+                ) : (
+                  <span key={d.uid}>
+                    <RoundCircleOne />
+                    <SmallText>{d.name}</SmallText>
+                  </span>
+                )
+              )}
+            </InnerContainer>
+          )}
+        </BoxContainer>
       </>
     );
   }

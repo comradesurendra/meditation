@@ -2,7 +2,7 @@ import React, { useEffect, useState, useContext } from "react";
 import { Redirect } from "react-router-dom";
 import styled from "styled-components";
 import { motion } from "framer-motion";
-import Logo from "../assets/undraw.svg";
+import Logo from "../assets/yoga.svg";
 import { logout } from "../helpers/auth";
 import { UserAuthData } from "../helpers/accountContext";
 
@@ -80,20 +80,22 @@ const HeaderText = styled.span`
   margin: 0;
 `;
 
-const SmallText = styled.h5`
+const SmallText = styled.div`
   color: #64cefd;
+  float: center;
   font-weight: 500;
-  font-size: 11px;
-  z-index: 10;
+  font-size: 19px;
   margin: 0;
-  margin-top: 7px;
+  right: 25px;
 `;
 
 const InnerContainer = styled.div`
   width: 80%;
   display: flex;
+  position: absolute;
   flex-direction: column;
   padding: 0 1.8em;
+  top: 40px;
 `;
 
 const ImageBoxContainer = styled.img`
@@ -142,6 +144,24 @@ export const LogOutButton = styled.button`
   }
 `;
 
+export const RoundCircleOne = styled.div`
+  float: left;
+  width: 19px;
+  height: 19px;
+  border-radius: 50%;
+  background-color: #80ed99;
+  margin: 5px;
+`;
+
+export const RoundCircleTwo = styled.div`
+  float: left;
+  width: 19px;
+  height: 19px;
+  border-radius: 50%;
+  background-color: #ff2442;
+  margin: 5px;
+`;
+
 const backdropVariants = {
   expanded: {
     width: "233%",
@@ -164,12 +184,9 @@ const expandingTransition = {
 };
 
 export function Trainer() {
-  const { userdata } = useContext(UserAuthData);
-
+  const { userdata, count, availdata } = useContext(UserAuthData);
   const [signout, setSignout] = useState(false);
-
   const handleSubmit = () => {};
-
   const handleLogout = async () => {
     try {
       const response = await logout();
@@ -178,7 +195,7 @@ export function Trainer() {
       }
     } catch (e) {}
   };
-
+  console.log(availdata);
   if (signout) {
     return <Redirect to="/" push={true} />;
   } else {
@@ -193,11 +210,37 @@ export function Trainer() {
         <BoxContainerTwo>
           <ImageBoxContainer src={Logo} />
         </BoxContainerTwo>
-        <StartButton type="submit" onClick={handleSubmit}>
-          Start
+        <StartButton
+          type="submit"
+          disable={count != 0 ? false : true}
+          onClick={handleSubmit}
+        >
+          End
         </StartButton>
         <BoxContainerThree></BoxContainerThree>
-        <BoxContainer></BoxContainer>
+        <BoxContainer>
+          {count === 0 || availdata.length === 0 ? (
+            <InnerContainer>
+              <SmallText>No user onlin.</SmallText>
+            </InnerContainer>
+          ) : (
+            <InnerContainer>
+              {availdata.map((d) =>
+                d.status == "offline" ? (
+                  <span key={d.uid}>
+                    <RoundCircleTwo />
+                    <SmallText>{d.name}</SmallText>
+                  </span>
+                ) : (
+                  <span key={d.uid}>
+                    <RoundCircleOne />
+                    <SmallText>{d.name}</SmallText>
+                  </span>
+                )
+              )}
+            </InnerContainer>
+          )}
+        </BoxContainer>
       </>
     );
   }
