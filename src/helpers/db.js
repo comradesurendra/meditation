@@ -23,6 +23,7 @@ export async function writeData(name, check, uid) {
     status: "offline",
     occupied: false,
     countdown: "",
+    pair: "",
   });
 }
 
@@ -33,7 +34,7 @@ export async function updateStatus(uid, check) {
       .orderByChild("uid")
       .equalTo(uid)
       .once("child_added", function (snapshot) {
-        snapshot.ref.update({ status: "online", occupied: false });
+        snapshot.ref.update({ status: "online", occupied: false, pair: "" });
       });
   } else {
     return await db
@@ -41,28 +42,41 @@ export async function updateStatus(uid, check) {
       .orderByChild("uid")
       .equalTo(uid)
       .once("child_added", function (snapshot) {
-        snapshot.ref.update({ status: "offline", occupied: false });
+        snapshot.ref.update({ status: "offline", occupied: false, pair: "" });
       });
   }
 }
 
-export async function setCounter(uid) {
+export async function setCounter(uid, tid) {
   return await db.ref(`user_data/${uid}`).update({
     countdown: {
       startAt: timestp,
       seconds: 60,
     },
     occupied: true,
+    pair: tid,
   });
 }
 
-export async function connectTrainer(alltrainer) {
-  let availabletrai = alltrainer.filter((obj) => obj?.status === "online");
-  return await db.ref(`user_data/${availabletrai[0]?.id}`).update({
+export async function connectTrainer(uid, tid) {
+  return await db.ref(`user_data/${tid}`).update({
     countdown: {
       startAt: timestp,
       seconds: 60,
     },
     occupied: true,
+    pair: uid,
+  });
+}
+
+export async function endCall(uid) {
+  console.log(uid);
+  return await db.ref(`user_data/${uid}`).update({
+    countdown: {
+      startAt: timestp,
+      seconds: 0,
+    },
+    occupied: false,
+    pair: "",
   });
 }

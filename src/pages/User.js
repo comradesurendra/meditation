@@ -92,8 +92,10 @@ export function User() {
   }, []);
 
   const handleSubmit = async () => {
-    await setCounter(userid);
-    await connectTrainer(availdata);
+    let availabletrai = availdata.filter((obj) => obj?.status === "online")
+    availabletrai = availabletrai[0]?.id;
+    await setCounter(userid, availabletrai);
+    await connectTrainer(userid, availabletrai);
   };
 
   const handleLogout = async () => {

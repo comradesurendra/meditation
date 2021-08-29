@@ -19,7 +19,7 @@ import {
 } from "./Common";
 import Logo from "../assets/yoga.svg";
 import { logout } from "../helpers/auth";
-import { setCounter, connectTrainer } from "../helpers/db";
+import { endCall, readData } from "../helpers/db";
 import { UserAuthData } from "../helpers/accountContext";
 import { db } from "../services/firebase";
 
@@ -34,27 +34,15 @@ export function Trainer() {
     const handleAvailUser = () => {
       let availableTrainer = 0;
       if (isMounted) {
-        db.ref(`user_data`)
-          .orderByChild("type")
-          .equalTo(userdata?.type == "trainer" ? "customer" : "trainer")
+        db.ref("user_data")
+          .orderByChild("uid")
+          .equalTo(userdata?.uid)
+          .limitToFirst(1)
           .once("value")
           .then((snapshot) => {
-            const data = snapshot?.val();
-            setAvailData(
-              data
-                ? Object.keys(data ? data : {})
-                    .map((key) => {
-                      if (data[key]?.status === "online") availableTrainer++;
-                      return {
-                        id: key,
-                        ...data[key],
-                      };
-                    })
-                    ?.filter((v) => v !== undefined)
-                : {}
-            );
-            setCount(availableTrainer);
-            return data;
+            let result = snapshot.val();
+            let key = Object.keys(result)[0];
+            localStorage.setItem("data", JSON.stringify(result[key]));
           });
       }
     };
@@ -91,8 +79,7 @@ export function Trainer() {
   }, []);
 
   const handleSubmit = async () => {
-    await setCounter(userid);
-    await connectTrainer(availdata);
+    await endCall(userdata?.pair);
   };
 
   const handleLogout = async () => {
@@ -103,7 +90,7 @@ export function Trainer() {
       }
     } catch (e) {}
   };
-  console.log(timer);
+  console.log(userdata?.uid);
   if (signout) {
     return <Redirect to="/" push={true} />;
   } else {

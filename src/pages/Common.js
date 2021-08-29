@@ -98,7 +98,7 @@ export const BoxContainerUser = styled.div`
   display: flex;
   flex-direction: column;
   border-radius: 19px;
-  background-color: #fff;
+  background-color: #515E63;
   box-shadow: 0 0 2px rgba(15, 15, 15, 0.28);
   position: relative;
   top: 154px;
@@ -112,7 +112,7 @@ export const BoxContainerTwoUser = styled.div`
   display: flex;
   flex-direction: column;
   border-radius: 19px;
-  background-color: #fff;
+  background-color: #C7FFD8;
   box-shadow: 0 0 2px rgba(15, 15, 15, 0.28);
   position: absolute;
   top: 97px;
@@ -126,7 +126,7 @@ export const BoxContainerThreeUser = styled.div`
   display: flex;
   flex-direction: column;
   border-radius: 19px;
-  background-color: #fff;
+  background-color: #515E63;
   box-shadow: 0 0 2px rgba(15, 15, 15, 0.28);
   position: absolute;
   top: 101px;
