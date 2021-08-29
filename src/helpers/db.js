@@ -70,7 +70,6 @@ export async function connectTrainer(uid, tid) {
 }
 
 export async function endCall(uid) {
-  console.log(uid);
   return await db.ref(`user_data/${uid}`).update({
     countdown: {
       startAt: timestp,

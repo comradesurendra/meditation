@@ -15,6 +15,7 @@ import {
   RoundCircleTwo,
   SmallTimerText,
   TimerContainerUser,
+  SmallTextTrainer,
   StartButtonGrey,
 } from "./Common";
 import Logo from "../assets/yoga.svg";
@@ -24,25 +25,22 @@ import { UserAuthData } from "../helpers/accountContext";
 import { db } from "../services/firebase";
 
 export function Trainer() {
-  const { userdata, count, availdata, setAvailData, setCount, userid } =
+  const { userdata, count, availdata,  userid } =
     useContext(UserAuthData);
   const [signout, setSignout] = useState(false);
   const [timer, setTimer] = useState();
+  const [pair,setPair] = useState();
 
   useEffect(() => {
     let isMounted = true;
     const handleAvailUser = () => {
       let availableTrainer = 0;
       if (isMounted) {
-        db.ref("user_data")
-          .orderByChild("uid")
-          .equalTo(userdata?.uid)
-          .limitToFirst(1)
+        db.ref(`user_data/${userid}/pair`)
           .once("value")
           .then((snapshot) => {
             let result = snapshot.val();
-            let key = Object.keys(result)[0];
-            localStorage.setItem("data", JSON.stringify(result[key]));
+            setPair(result);
           });
       }
     };
@@ -79,7 +77,7 @@ export function Trainer() {
   }, []);
 
   const handleSubmit = async () => {
-    await endCall(userdata?.pair);
+    await endCall(pair);
   };
 
   const handleLogout = async () => {
@@ -90,7 +88,6 @@ export function Trainer() {
       }
     } catch (e) {}
   };
-  console.log(userdata?.uid);
   if (signout) {
     return <Redirect to="/" push={true} />;
   } else {
@@ -124,6 +121,7 @@ export function Trainer() {
             </InnerContainerUser>
           ) : (
             <InnerContainerUser>
+              <SmallTextTrainer>Available Customer</SmallTextTrainer>
               {availdata.map((d) =>
                 d.status == "offline" ? (
                   <span key={d.uid}>

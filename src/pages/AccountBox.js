@@ -84,7 +84,7 @@ const ImageBoxContainer = styled.img`
   width: 700px;
   height: 550px;
   position: absolute;
-  top: 120px;
+  top: 100px;
   left: 140px;
 `;
 

@@ -7,6 +7,7 @@ import {
   HeaderContainerUser,
   HeaderTextUser,
   SmallTextUser,
+  SmallTextTrainer,
   InnerContainerUser,
   ImageBoxContainerUser,
   StartButton,
@@ -69,17 +70,16 @@ export function User() {
       db.ref(`user_data/${userid}/countdown`).on("value", (snapshot) => {
         let seconds = snapshot.val().seconds;
         let startAt = snapshot.val().startAt;
-
-        let interval = setInterval(() => {
-          let timeLeft =
-            seconds * 1000 - (Date.now() - startAt - serverTimeOffset);
-          if (timeLeft < 0) {
-            clearInterval(interval);
-            setTimer(0);
-          } else {
-            setTimer(`${Math.floor(timeLeft / 1000)}`);
-          }
-        }, 100);
+          let interval = setInterval(() => {
+            let timeLeft =
+              seconds * 1000 - (Date.now() - startAt - serverTimeOffset);
+            if (timeLeft < 0) {
+              clearInterval(interval);
+              setTimer(0);
+            } else {
+              setTimer(`${Math.floor(timeLeft / 1000)}`);
+            } 
+          }, 100);
         return seconds;
       });
     };
@@ -92,7 +92,7 @@ export function User() {
   }, []);
 
   const handleSubmit = async () => {
-    let availabletrai = availdata.filter((obj) => obj?.status === "online")
+    let availabletrai = availdata.filter((obj) => obj?.status === "online");
     availabletrai = availabletrai[0]?.id;
     await setCounter(userid, availabletrai);
     await connectTrainer(userid, availabletrai);
@@ -106,7 +106,6 @@ export function User() {
       }
     } catch (e) {}
   };
-  console.log(timer);
   if (signout) {
     return <Redirect to="/" push={true} />;
   } else {
@@ -123,7 +122,7 @@ export function User() {
         </BoxContainerTwoUser>
         {count !== 0 ? (
           <StartButton type="submit" onClick={handleSubmit}>
-            Start
+            start
           </StartButton>
         ) : (
           <StartButtonGrey type="submit">Start</StartButtonGrey>
@@ -140,6 +139,7 @@ export function User() {
             </InnerContainerUser>
           ) : (
             <InnerContainerUser>
+              <SmallTextTrainer>Available Trainer</SmallTextTrainer>
               {availdata.map((d) =>
                 d.status == "offline" ? (
                   <span key={d.uid}>

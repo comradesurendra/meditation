@@ -98,7 +98,7 @@ export const BoxContainerUser = styled.div`
   display: flex;
   flex-direction: column;
   border-radius: 19px;
-  background-color: #515E63;
+  background-color: #515e63;
   box-shadow: 0 0 2px rgba(15, 15, 15, 0.28);
   position: relative;
   top: 154px;
@@ -112,7 +112,7 @@ export const BoxContainerTwoUser = styled.div`
   display: flex;
   flex-direction: column;
   border-radius: 19px;
-  background-color: #C7FFD8;
+  background-color: #e8e8e8;
   box-shadow: 0 0 2px rgba(15, 15, 15, 0.28);
   position: absolute;
   top: 97px;
@@ -126,7 +126,7 @@ export const BoxContainerThreeUser = styled.div`
   display: flex;
   flex-direction: column;
   border-radius: 19px;
-  background-color: #515E63;
+  background-color: #515e63;
   box-shadow: 0 0 2px rgba(15, 15, 15, 0.28);
   position: absolute;
   top: 101px;
@@ -135,7 +135,7 @@ export const BoxContainerThreeUser = styled.div`
 `;
 
 export const HeaderContainerUser = styled.div`
-  width: 400px;
+  width: 700px;
   display: flex;
   position: absolute;
   left: 100px;
@@ -150,19 +150,30 @@ export const HeaderTextUser = styled.span`
   padding: 0;
   font-size: 2.25rem;
   font-family: "Sacramento", cursive;
-  color: #64cefd;
+  color: #515e63;
   z-index: 10;
   right: 40px;
   margin: 0;
 `;
 
 export const SmallTextUser = styled.div`
-  color: #64cefd;
+  color: #fff;
   float: center;
   font-weight: 500;
   font-size: 19px;
   margin: 0;
   right: 25px;
+`;
+
+export const SmallTextTrainer = styled.div`
+  color: #fff;
+  position: relative;
+  float: center;
+  font-weight: 500;
+  font-size: 19px;
+  margin: 2;
+  left: 90px;
+  bottom: 17px;
 `;
 
 export const InnerContainerUser = styled.div`
@@ -258,7 +269,7 @@ export const RoundCircleTwo = styled.div`
 `;
 
 export const SmallTimerText = styled.div`
-  color: #64cefd;
+  color: #fff;
   float: center;
   font-weight: 500;
   font-size: 29px;
