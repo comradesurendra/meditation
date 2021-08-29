@@ -1,5 +1,5 @@
 import { auth } from "../services/firebase";
-import { writeData, readData } from "./db";
+import { writeData, readData, updateStatus } from "./db";
 
 export async function signup(email, password, name, check) {
   try {
@@ -22,6 +22,7 @@ export async function signin(email, password) {
       localStorage.setItem("token", response.user.refreshToken);
       localStorage.setItem("uid", response.user.uid);
       readData(response.user.uid);
+      updateStatus(response.user.uid, "login");
       return true;
     }
   } catch (e) {
@@ -33,8 +34,10 @@ export async function logout() {
   return await auth()
     .signOut()
     .then(() => {
+      updateStatus(localStorage.getItem('uid'), "logout");
       localStorage.removeItem("token");
       localStorage.removeItem("uid");
+      localStorage.removeItem("data");
       return true;
     })
     .catch((err) => {

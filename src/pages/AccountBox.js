@@ -1,10 +1,9 @@
-import React, { useState, useContext,useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 import { LoginForm } from "./LoginForm";
 import { motion } from "framer-motion";
 import { Redirect } from "react-router-dom";
 import { AccountContext } from "../helpers/accountContext";
-import { UserAuthData } from "../helpers/accountContext";
 import Logo from "../assets/mindfulness.svg";
 import { SignupForm } from "./SignupForm";
 
@@ -64,20 +63,6 @@ const HeaderText = styled.h2`
   right: 40px;
   margin: 0;
 `;
-
-// const HomeHeaderText = styled.h2`
-//   font-size: 2.25rem;
-//   font-weight: 600;
-//   position: relative;
-//   top:70px;
-//   left:250px;
-//   position: absolute;
-//   line-height: 1.24;
-//   font-family: 'Sacramento', cursive;
-//   color: #64CEFD;
-//   text-align: center;
-//   margin: 0;
-// `;
 
 const SmallText = styled.h5`
   color: #fff;
@@ -150,13 +135,8 @@ export function AccountBox(props) {
     }, 400);
   };
 
-  const contextValue = { switchToSignup, switchToSignin, setAuth };
+  const contextValue = { switchToSignup, switchToSignin, setAuth, authenticate };
 
-  useEffect(() =>{
-  
-  },[authenticate])
-
-  console.log(authenticate);
   if (authenticate) {
     return <Redirect to="/dashboard" />;
   } else {

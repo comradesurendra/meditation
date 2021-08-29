@@ -1,14 +1,19 @@
-import React from 'react'
-import {User} from './User'
-import {Trainer} from './Trainer'
+import React, { useEffect, useState, useContext } from "react";
+import { Trainer } from "./Trainer";
+import { User } from "./User";
+import { UserAuthData } from "../helpers/accountContext";
 
-function Dashboard() {
-    return (
-        <div>
-            <User/>
-            <Trainer/>
-        </div>
-    )
+export function Dashboard(props) {
+  const [userdata, setUserData] = useState(
+    JSON.parse(localStorage.getItem("data"))
+  );
+  const [availdat, setAvailData] = useState(false);
+
+  useEffect(() => {}, [userdata, availdat]);
+
+  return (
+    <UserAuthData.Provider value={{ userdata, setUserData }}>
+      {userdata?.type == "customer" ? <User /> : <Trainer />}
+    </UserAuthData.Provider>
+  );
 }
-
-export default Dashboard

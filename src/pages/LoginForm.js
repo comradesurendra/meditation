@@ -1,4 +1,4 @@
-import React, { useContext, useState } from "react";
+import React, { useContext, useState, useEffect } from "react";
 import {
   BoldLink,
   BoxContainer,
@@ -12,7 +12,7 @@ import { signin } from "../helpers/auth";
 import { AccountContext } from "../helpers/accountContext";
 
 export function LoginForm() {
-  const { switchToSignup,setAuth } = useContext(AccountContext);
+  const { switchToSignup, setAuth, authenticate } = useContext(AccountContext);
   const [email, setEmail] = useState("");
   const [pass, setPass] = useState("");
 
@@ -20,13 +20,11 @@ export function LoginForm() {
     e.preventDefault();
     try {
       let response = await signin(email, pass);
-      console.log(response);
-      if(response){
-      setAuth(true);
+      if (response) {
+        setAuth(true);
       }
     } catch (e) {}
   };
-
   return (
     <BoxContainer>
       <FormContainer>
@@ -51,10 +49,7 @@ export function LoginForm() {
       </SubmitButton>
       <Marginer direction="vertical" margin="1em" />
       <MutedLink onClick={switchToSignup}>
-        Don't have an accoun?{" "}
-        <BoldLink >
-          Signup
-        </BoldLink>
+        Don't have an accoun? <BoldLink>Signup</BoldLink>
       </MutedLink>
     </BoxContainer>
   );

@@ -1,10 +1,211 @@
-import React from 'react'
+import React, { useEffect, useState } from "react";
+import { Redirect } from "react-router-dom";
+import styled from "styled-components";
+import { motion } from "framer-motion";
+import Logo from "../assets/undraw.svg";
+import { logout } from "../helpers/auth";
 
-export function User() {
-    return (
-        <div>
-            <h1>Welcome User</h1>
-        </div>
-    )
+const BoxContainer = styled.div`
+  width: 380px;
+  min-height: 450px;
+  display: flex;
+  flex-direction: column;
+  border-radius: 19px;
+  background-color: #fff;
+  box-shadow: 0 0 2px rgba(15, 15, 15, 0.28);
+  position: relative;
+  top: 154px;
+  left: 1100px;
+  overflow: hidden;
+`;
+
+const BoxContainerTwo = styled.div`
+  width: 802px;
+  min-height: 550px;
+  display: flex;
+  flex-direction: column;
+  border-radius: 19px;
+  background-color: #fff;
+  box-shadow: 0 0 2px rgba(15, 15, 15, 0.28);
+  position: absolute;
+  top: 97px;
+  left: 100px;
+  overflow: hidden;
+`;
+
+const BoxContainerThree = styled.div`
+  width: 380px;
+  min-height: 70px;
+  display: flex;
+  flex-direction: column;
+  border-radius: 19px;
+  background-color: #fff;
+  box-shadow: 0 0 2px rgba(15, 15, 15, 0.28);
+  position: absolute;
+  top: 101px;
+  left: 1100px;
+  overflow: hidden;
+`;
+
+const TopContainer = styled.div`
+  width: 50%;
+  height: 300px;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  padding: 0 1.8em;
+  padding-bottom: 5em;
+`;
+
+const HeaderContainer = styled.div`
+  width: 600px;
+  display: flex;
+  position: absolute;
+  left: 100px;
+  top: 20px;
+  flex-direction: column;
+`;
+
+const HeaderText = styled.span`
+  font-weight: 600;
+  line-height: 1.24;
+  margin: 0;
+  padding: 0;
+  font-size: 2.25rem;
+  font-family: "Sacramento", cursive;
+  color: #64cefd;
+  z-index: 10;
+  right: 40px;
+  margin: 0;
+`;
+
+const SmallText = styled.h5`
+  color: #64cefd;
+  font-weight: 500;
+  font-size: 11px;
+  z-index: 10;
+  margin: 0;
+  margin-top: 7px;
+`;
+
+const InnerContainer = styled.div`
+  width: 80%;
+  display: flex;
+  flex-direction: column;
+  padding: 0 1.8em;
+`;
+
+const ImageBoxContainer = styled.img`
+  width: 700px;
+  height: 500px;
+  position: absolute;
+  left: 30px;
+  top: 30px;
+`;
+
+export const StartButton = styled.button`
+  width: 10px;
+  padding: 11px 4%;
+  position: relative;
+  top: 656px;
+  left: 289px;
+  color: #fff;
+  font-size: 15px;
+  font-weight: 600;
+  border: none;
+  border-radius: 100px 100px 100px 100px;
+  cursor: pointer;
+  transition: all, 240ms ease-in-out;
+  background: #64cefd;
+  &:hover {
+    filter: brightness(1.03);
+  }
+`;
+
+export const LogOutButton = styled.button`
+  width: 10px;
+  padding: 11px 4%;
+  position: relative;
+  top: 20px;
+  left: 1350px;
+  color: #fff;
+  font-size: 15px;
+  font-weight: 600;
+  border: none;
+  border-radius: 100px 100px 100px 100px;
+  cursor: pointer;
+  transition: all, 240ms ease-in-out;
+  background: #64cefd;
+  &:hover {
+    filter: brightness(1.03);
+  }
+`;
+
+const backdropVariants = {
+  expanded: {
+    width: "233%",
+    height: "1050px",
+    borderRadius: "20%",
+    transform: "rotate(60deg)",
+  },
+  collapsed: {
+    width: "160%",
+    height: "550px",
+    borderRadius: "50%",
+    transform: "rotate(60deg)",
+  },
+};
+
+const expandingTransition = {
+  type: "spring",
+  duration: 2.3,
+  stiffness: 30,
+};
+
+function useCustomState(defaultValue, key) {
+  const [value, setValue] = React.useState(() => {
+    const stickyValue = localStorage.getItem(key);
+    return stickyValue !== null ? JSON.parse(stickyValue) : defaultValue;
+  });
+  return [value, setValue];
 }
 
+export function User() {
+  const [userData, setUserData] = useCustomState(null, "data");
+  const [signout, setSignout] = useState(false);
+
+  const handleSubmit = () => {};
+
+  const handleLogout = async () => {
+    try {
+      const response = await logout();
+      if (response) {
+        setSignout(true);
+      }
+    } catch (e) {}
+  };
+
+  useEffect(() => {}, [signout]);
+  if (signout) {
+    return <Redirect to="/" push={true} />;
+  } else {
+    return (
+      <>
+        <HeaderContainer>
+          <HeaderText>Welcome {userData.name}</HeaderText>
+        </HeaderContainer>
+        <LogOutButton type="submit" onClick={handleLogout}>
+          logout
+        </LogOutButton>
+        <BoxContainerTwo>
+          <ImageBoxContainer src={Logo} />
+        </BoxContainerTwo>
+        <StartButton type="submit" onClick={handleSubmit}>
+          Start
+        </StartButton>
+        <BoxContainerThree></BoxContainerThree>
+        <BoxContainer></BoxContainer>
+      </>
+    );
+  }
+}
