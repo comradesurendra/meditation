@@ -185,7 +185,7 @@ const expandingTransition = {
   stiffness: 30,
 };
 
-export function User() {
+export function Trainer() {
   const { userdata, count, availdata,setAvailData, setCount } = useContext(UserAuthData);
   const [signout, setSignout] = useState(false);
 
