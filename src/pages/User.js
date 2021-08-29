@@ -1,193 +1,34 @@
 import React, { useEffect, useState, useContext } from "react";
 import { Redirect } from "react-router-dom";
-import styled from "styled-components";
-import { motion } from "framer-motion";
+import {
+  BoxContainerUser,
+  BoxContainerTwoUser,
+  BoxContainerThreeUser,
+  HeaderContainerUser,
+  HeaderTextUser,
+  SmallTextUser,
+  InnerContainerUser,
+  ImageBoxContainerUser,
+  StartButton,
+  LogOutButton,
+  RoundCircleOne,
+  RoundCircleTwo,
+  SmallTimerText,
+  TimerContainerUser,
+  StartButtonGrey,
+} from "./Common";
 import Logo from "../assets/undraw.svg";
 import { logout } from "../helpers/auth";
-import {setCounter}  from "../helpers/db"
+import { setCounter, connectTrainer } from "../helpers/db";
 import { UserAuthData } from "../helpers/accountContext";
 import { db } from "../services/firebase";
 
-const BoxContainer = styled.div`
-  width: 380px;
-  min-height: 450px;
-  display: flex;
-  flex-direction: column;
-  border-radius: 19px;
-  background-color: #fff;
-  box-shadow: 0 0 2px rgba(15, 15, 15, 0.28);
-  position: relative;
-  top: 154px;
-  left: 1100px;
-  overflow: hidden;
-`;
-
-const BoxContainerTwo = styled.div`
-  width: 802px;
-  min-height: 550px;
-  display: flex;
-  flex-direction: column;
-  border-radius: 19px;
-  background-color: #fff;
-  box-shadow: 0 0 2px rgba(15, 15, 15, 0.28);
-  position: absolute;
-  top: 97px;
-  left: 100px;
-  overflow: hidden;
-`;
-
-const BoxContainerThree = styled.div`
-  width: 380px;
-  min-height: 70px;
-  display: flex;
-  flex-direction: column;
-  border-radius: 19px;
-  background-color: #fff;
-  box-shadow: 0 0 2px rgba(15, 15, 15, 0.28);
-  position: absolute;
-  top: 101px;
-  left: 1100px;
-  overflow: hidden;
-`;
-
-const TopContainer = styled.div`
-  width: 50%;
-  height: 300px;
-  display: flex;
-  flex-direction: column;
-  justify-content: flex-end;
-  padding: 0 1.8em;
-  padding-bottom: 5em;
-`;
-
-const HeaderContainer = styled.div`
-  width: 400px;
-  display: flex;
-  position: absolute;
-  left: 100px;
-  top: 20px;
-  flex-direction: column;
-`;
-
-const HeaderText = styled.span`
-  font-weight: 600;
-  line-height: 1.24;
-  margin: 0;
-  padding: 0;
-  font-size: 2.25rem;
-  font-family: "Sacramento", cursive;
-  color: #64cefd;
-  z-index: 10;
-  right: 40px;
-  margin: 0;
-`;
-
-const SmallText = styled.div`
-  color: #64cefd;
-  float: center;
-  font-weight: 500;
-  font-size: 19px;
-  margin: 0;
-  right: 25px;
-`;
-
-const InnerContainer = styled.div`
-  width: 80%;
-  display: flex;
-  position: absolute;
-  flex-direction: column;
-  padding: 0 1.8em;
-  top: 40px;
-`;
-
-const ImageBoxContainer = styled.img`
-  width: 700px;
-  height: 500px;
-  position: absolute;
-  left: 30px;
-  top: 30px;
-`;
-
-export const StartButton = styled.button`
-  width: 10px;
-  padding: 11px 4%;
-  position: relative;
-  top: 656px;
-  left: 289px;
-  color: #fff;
-  font-size: 15px;
-  font-weight: 600;
-  border: none;
-  border-radius: 100px 100px 100px 100px;
-  cursor: pointer;
-  transition: all, 240ms ease-in-out;
-  background: #64cefd;
-  &:hover {
-    filter: brightness(1.03);
-  }
-`;
-
-export const LogOutButton = styled.button`
-  width: 10px;
-  padding: 11px 4%;
-  position: relative;
-  top: 20px;
-  left: 1350px;
-  color: #fff;
-  font-size: 15px;
-  font-weight: 600;
-  border: none;
-  border-radius: 100px 100px 100px 100px;
-  cursor: pointer;
-  transition: all, 240ms ease-in-out;
-  background: #64cefd;
-  &:hover {
-    filter: brightness(1.03);
-  }
-`;
-
-export const RoundCircleOne = styled.div`
-  float: left;
-  width: 19px;
-  height: 19px;
-  border-radius: 50%;
-  background-color: #80ed99;
-  margin: 5px;
-`;
-
-export const RoundCircleTwo = styled.div`
-  float: left;
-  width: 19px;
-  height: 19px;
-  border-radius: 50%;
-  background-color: #ff2442;
-  margin: 5px;
-`;
-
-const backdropVariants = {
-  expanded: {
-    width: "233%",
-    height: "1050px",
-    borderRadius: "20%",
-    transform: "rotate(60deg)",
-  },
-  collapsed: {
-    width: "160%",
-    height: "550px",
-    borderRadius: "50%",
-    transform: "rotate(60deg)",
-  },
-};
-
-const expandingTransition = {
-  type: "spring",
-  duration: 2.3,
-  stiffness: 30,
-};
-
 export function User() {
-  const { userdata, count, availdata,setAvailData, setCount } = useContext(UserAuthData);
+  const { userdata, count, availdata, setAvailData, setCount, userid } =
+    useContext(UserAuthData);
   const [signout, setSignout] = useState(false);
+  const [timer, setTimer] = useState();
+  const [start, setStart] = useState(false);
 
   useEffect(() => {
     let isMounted = true;
@@ -196,7 +37,7 @@ export function User() {
       if (isMounted) {
         db.ref(`user_data`)
           .orderByChild("type")
-          .equalTo(userdata?.type=="trainer"?"customer":"trainer")
+          .equalTo(userdata?.type == "trainer" ? "customer" : "trainer")
           .once("value")
           .then((snapshot) => {
             const data = snapshot?.val();
@@ -204,7 +45,7 @@ export function User() {
               data
                 ? Object.keys(data ? data : {})
                     .map((key) => {
-                      if (data[key].status === "online") availableTrainer++;
+                      if (data[key]?.status === "online") availableTrainer++;
                       return {
                         id: key,
                         ...data[key],
@@ -219,17 +60,40 @@ export function User() {
       }
     };
 
-    db.ref(`user_data`).on("child_changed", handleAvailUser);
+    const handleTimer = () => {
+      let serverTimeOffset = 0;
+      db.ref(".info/serverTimeOffset").on("value", (snapshot) => {
+        serverTimeOffset = snapshot.val();
+        return serverTimeOffset;
+      });
+      db.ref(`user_data/${userid}/countdown`).on("value", (snapshot) => {
+        let seconds = snapshot.val().seconds;
+        let startAt = snapshot.val().startAt;
 
+        let interval = setInterval(() => {
+          let timeLeft =
+            seconds * 1000 - (Date.now() - startAt - serverTimeOffset);
+          if (timeLeft < 0) {
+            clearInterval(interval);
+            setTimer(0);
+          } else {
+            setTimer(`${Math.floor(timeLeft / 1000)}`);
+          }
+        }, 100);
+        return seconds;
+      });
+    };
     db.ref(`user_data`).on("child_changed", handleAvailUser);
+    db.ref(`user_data/${userid}/countdown`).on("child_added", handleTimer);
 
     return () => {
       isMounted = false;
     };
   }, []);
 
-  const handleSubmit = () => {
-    setCounter(userdata?.uid);
+  const handleSubmit = async () => {
+    await setCounter(userid);
+    await connectTrainer(availdata);
   };
 
   const handleLogout = async () => {
@@ -240,52 +104,56 @@ export function User() {
       }
     } catch (e) {}
   };
-  console.log(availdata);
+  console.log(timer);
   if (signout) {
     return <Redirect to="/" push={true} />;
   } else {
     return (
       <>
-        <HeaderContainer>
-          <HeaderText>Welcome {userdata?.name}</HeaderText>
-        </HeaderContainer>
+        <HeaderContainerUser>
+          <HeaderTextUser>Welcome {userdata?.name}</HeaderTextUser>
+        </HeaderContainerUser>
         <LogOutButton type="submit" onClick={handleLogout}>
           logout
         </LogOutButton>
-        <BoxContainerTwo>
-          <ImageBoxContainer src={Logo} />
-        </BoxContainerTwo>
-        <StartButton
-          type="submit"
-          disable={count != 0 ? false : true}
-          onClick={handleSubmit}
-        >
-          Start
-        </StartButton>
-        <BoxContainerThree></BoxContainerThree>
-        <BoxContainer>
-          {count === 0 || availdata.length === 0 ? (
-            <InnerContainer>
-              <SmallText>No tariner onlin.</SmallText>
-            </InnerContainer>
+        <BoxContainerTwoUser>
+          <ImageBoxContainerUser src={Logo} />
+        </BoxContainerTwoUser>
+        {count !== 0 ? (
+          <StartButton type="submit" onClick={handleSubmit}>
+            Start
+          </StartButton>
+        ) : (
+          <StartButtonGrey type="submit">Start</StartButtonGrey>
+        )}
+        <BoxContainerThreeUser>
+          <TimerContainerUser>
+            <SmallTimerText>{timer}</SmallTimerText>
+          </TimerContainerUser>
+        </BoxContainerThreeUser>
+        <BoxContainerUser>
+          {count === 0 ? (
+            <InnerContainerUser>
+              <SmallTextUser>No tariner onlin.</SmallTextUser>
+            </InnerContainerUser>
           ) : (
-            <InnerContainer>
+            <InnerContainerUser>
               {availdata.map((d) =>
                 d.status == "offline" ? (
                   <span key={d.uid}>
                     <RoundCircleTwo />
-                    <SmallText>{d.name}</SmallText>
+                    <SmallTextUser>{d.name}</SmallTextUser>
                   </span>
                 ) : (
                   <span key={d.uid}>
                     <RoundCircleOne />
-                    <SmallText>{d.name}</SmallText>
+                    <SmallTextUser>{d.name}</SmallTextUser>
                   </span>
                 )
               )}
-            </InnerContainer>
+            </InnerContainerUser>
           )}
-        </BoxContainer>
+        </BoxContainerUser>
       </>
     );
   }

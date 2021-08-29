@@ -8,6 +8,7 @@ export function Dashboard(props) {
   const [userdata, setUserData] = useState(
     JSON.parse(localStorage.getItem("data"))
   );
+  const [userid, setUserId] = useState(localStorage.getItem("userId"));
   const [availdata, setAvailData] = useState([{}]);
   const [count, setCount] = useState(0);
   useEffect(() => {
@@ -41,10 +42,17 @@ export function Dashboard(props) {
       isMounted = false;
     };
   }, []);
-  console.log(availdata);
   return (
     <UserAuthData.Provider
-      value={{ userdata, setUserData, count, availdata,setAvailData, count, setCount }}
+      value={{
+        userdata,
+        setUserData,
+        availdata,
+        setAvailData,
+        count,
+        setCount,
+        userid,
+      }}
     >
       {userdata?.type == "customer" ? <User /> : <Trainer />}
     </UserAuthData.Provider>

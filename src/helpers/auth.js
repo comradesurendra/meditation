@@ -34,7 +34,7 @@ export async function logout() {
   return await auth()
     .signOut()
     .then(() => {
-      updateStatus(localStorage.getItem('uid'), "logout");
+      updateStatus(localStorage.getItem("uid"), "logout");
       localStorage.removeItem("token");
       localStorage.removeItem("uid");
       localStorage.removeItem("data");
