@@ -6,6 +6,7 @@ import Logo from "../assets/undraw.svg";
 import { logout } from "../helpers/auth";
 import {setCounter}  from "../helpers/db"
 import { UserAuthData } from "../helpers/accountContext";
+import { db } from "../services/firebase";
 
 const BoxContainer = styled.div`
   width: 380px;
@@ -185,11 +186,52 @@ const expandingTransition = {
 };
 
 export function User() {
-  const { userdata, count, availdata } = useContext(UserAuthData);
+  const { userdata, count, availdata,setAvailData, setCount } = useContext(UserAuthData);
   const [signout, setSignout] = useState(false);
+
+  useEffect(() => {
+    let isMounted = true;
+    const handleAvailUser = () => {
+      let availableTrainer = 0;
+      if (isMounted) {
+        db.ref(`user_data`)
+          .orderByChild("type")
+          .equalTo(userdata?.type=="trainer"?"customer":"trainer")
+          .once("value")
+          .then((snapshot) => {
+            const data = snapshot?.val();
+            setAvailData(
+              data
+                ? Object.keys(data ? data : {})
+                    .map((key) => {
+                      if (data[key].status === "online") availableTrainer++;
+                      return {
+                        id: key,
+                        ...data[key],
+                      };
+                    })
+                    ?.filter((v) => v !== undefined)
+                : {}
+            );
+            setCount(availableTrainer);
+            return data;
+          });
+      }
+    };
+
+    db.ref(`user_data`).on("child_changed", handleAvailUser);
+
+    db.ref(`user_data`).on("child_changed", handleAvailUser);
+
+    return () => {
+      isMounted = false;
+    };
+  }, []);
+
   const handleSubmit = () => {
     setCounter(userdata?.uid);
   };
+
   const handleLogout = async () => {
     try {
       const response = await logout();

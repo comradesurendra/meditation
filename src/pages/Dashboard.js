@@ -10,48 +10,42 @@ export function Dashboard(props) {
   );
   const [availdata, setAvailData] = useState([{}]);
   const [count, setCount] = useState(0);
-
   useEffect(() => {
     let isMounted = true;
-    const handleAvailUser = () => {
-      let availableTrainer = 0;
-      if (isMounted) {
-        db.ref(`user_data`)
-          .orderByChild("type")
-          .equalTo(userdata.type=="trainer"?"customer":"trainer")
-          .once("value")
-          .then((snapshot) => {
-            const data = snapshot?.val();
-            setAvailData(
-              data
-                ? Object.keys(data ? data : {})
-                    .map((key) => {
-                      if (data[key].status === "online") availableTrainer++;
-                      return {
-                        id: key,
-                        ...data[key],
-                      };
-                    })
-                    ?.filter((v) => v !== undefined)
-                : {}
-            );
-            setCount(availableTrainer);
-            return data;
-          });
-      }
-    };
-
-    db.ref(`user_data`).on("child_changed", handleAvailUser);
-
-    db.ref(`user_data`).on("child_changed", handleAvailUser);
-
+    let availableTrainer = 0;
+    if (isMounted) {
+      db.ref(`user_data`)
+        .orderByChild("type")
+        .equalTo(userdata?.type == "trainer" ? "customer" : "trainer")
+        .once("value")
+        .then((snapshot) => {
+          const data = snapshot?.val();
+          setAvailData(
+            data
+              ? Object.keys(data ? data : {})
+                  .map((key) => {
+                    if (data[key].status === "online") availableTrainer++;
+                    return {
+                      id: key,
+                      ...data[key],
+                    };
+                  })
+                  ?.filter((v) => v !== undefined)
+              : {}
+          );
+          setCount(availableTrainer);
+          return data;
+        });
+    }
     return () => {
       isMounted = false;
     };
   }, []);
- console.log(availdata);
+  console.log(availdata);
   return (
-    <UserAuthData.Provider value={{ userdata, setUserData,count,availdata }}>
+    <UserAuthData.Provider
+      value={{ userdata, setUserData, count, availdata,setAvailData, count, setCount }}
+    >
       {userdata?.type == "customer" ? <User /> : <Trainer />}
     </UserAuthData.Provider>
   );
