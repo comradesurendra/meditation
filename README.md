@@ -41,3 +41,9 @@
 
 ### Project link
 [Meditation session](https://zen-edison-a38f20.netlify.app/)
+
+```
+Email & Pass (Customer) - customer.demo.com / demo123
+Email & Pass (Trainer) - trainer.demo.com / demo123
+
+```
