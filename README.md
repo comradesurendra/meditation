@@ -8,11 +8,6 @@
     (Need to resolve logical error)
 - [x] Once the session is over, timer stops and meditation is over.
 
-### Bonus Points
-- [ ] When a seeker requests for meditation, the request is broadcasted to every available trainer, if any one of the trainers accept the request, the meditation starts.
-- [ ] Trainers can switch off getting requests with a button.
-- [ ] Setup meditation Reminders
-
 ### DB Schema
 ```
 "user_data" : {
